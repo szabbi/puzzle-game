@@ -1,0 +1,36 @@
+.root {
+    -fx-font-size: 20;
+}
+
+.tile {
+    -fx-border-color: black;
+    -fx-background-color: white;
+    -fx-border-width: 2;
+}
+
+.tile:hover {
+    -fx-background-color: rgba(0, 255, 0, 0.5);
+}
+
+#grid {
+    -fx-border-color: black;
+    -fx-border-width: 4;
+}
+
+#moveCountTextField {
+    -fx-highlight-fill: null;
+    -fx-highlight-text-fill: null;
+    -fx-border-color: black;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-cursor: default;
+    -fx-border-width: 2;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Times New Roman';
+}
+
+#numberOfMovesText {
+    -fx-font-weight: bold;
+    -fx-font-family: 'Times New Roman';
+    -fx-font-size: 25;
+}
