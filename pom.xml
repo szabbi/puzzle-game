@@ -6,11 +6,11 @@
     <artifactId>homework-template-project</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-    <description><!-- TODO: a brief description of your project --></description>
+    <description>A puzzle game where the goal is to make two circles (red and blue) touch each other.</description>
     <developers>
         <developer>
-            <name><!-- TODO: your full name --></name>
-            <email><!-- TODO: your email address --></email>
+            <name>Nagy Szabolcs</name>
+            <email>nagy.szabolcsffs@gmail.com</email>
             <organization>Faculty of Informatics, University of Debrecen</organization>
             <organizationUrl>https://inf.unideb.hu/</organizationUrl>
         </developer>
@@ -19,12 +19,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
         <maven.compiler.release>21</maven.compiler.release>
+        <exec.mainClass>twoballspuzzle.solver.Main</exec.mainClass>
         <javafx.version>22.0.1</javafx.version>
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
         <jacoco.version>0.8.12</jacoco.version>
         <maven.checkstyle.version>3.3.1</maven.checkstyle.version>
         <maven.surefire.version>3.2.5</maven.surefire.version>
-        <exec.mainClass><!-- TODO: the fully-qualified class name of your class that contains the main() method to launch the application --></exec.mainClass>
     </properties>
     <dependencies>
         <dependency>

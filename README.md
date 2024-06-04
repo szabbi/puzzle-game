@@ -1,5 +1,9 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/XbZw8B6J)
-# TODO: a title for your project
+># **A puzzle with two colorful balls**
+> - The player can move with the red ball (shown on the picture) to any adjacent squares that aren't blocked by a wall.  
+> - Movement with the red ball results in movement with the blue ball in the opposite direction, therefore movement is only possible if none of the balls are blocked by a wall.  
+>
+> **The goal is to make the balls touch.**
 
-TODO: a detailed description of your project (must contain at least the original description of the assignment)
+![](assets/twoballspuzzle.png)
 
+>## **A possible solution:**
