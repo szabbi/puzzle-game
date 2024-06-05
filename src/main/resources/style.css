@@ -6,6 +6,7 @@
     -fx-border-color: black;
     -fx-background-color: white;
     -fx-border-width: 2;
+    -fx-cell-size: 10;
 }
 
 .tile:hover {
