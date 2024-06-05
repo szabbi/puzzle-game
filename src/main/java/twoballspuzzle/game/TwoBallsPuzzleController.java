@@ -1,20 +1,26 @@
 package twoballspuzzle.game;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.TextField;
 
+import twoballspuzzle.model.Direction;
+import twoballspuzzle.model.Position;
 import twoballspuzzle.model.PuzzleState;
 import util.javafx.ImageStorage;
 import utilities.ImageLoader;
 
 import javafx.scene.image.ImageView;
+
+import java.util.Optional;
 
 public class TwoBallsPuzzleController {
     @FXML
@@ -29,16 +35,17 @@ public class TwoBallsPuzzleController {
 
     private ImageStorage<Integer> imageStorage = new ImageLoader(TwoBallsPuzzleController.class, "red-ball.png", "blue-ball.png");
 
+
     @FXML
     private void initialize() {
-        bindMoveCount();
+        moveCountTextField.textProperty().bind(moveCount.asString());
         restartGame();
     }
 
     private void restartGame() {
-        createState();
-        moveCount.set(0);
+        createNewState();
         createGameBoard();
+        moveCount.set(0);
     }
 
     private void createGameBoard() {
@@ -46,6 +53,7 @@ public class TwoBallsPuzzleController {
         for (var row = 0; row < grid.getRowCount(); row++) {
             for (var column = 0; column < grid.getColumnCount(); column++) {
                 var tile = createTilesAndAddImages(column, row);
+                tile.setOnMouseClicked(this::onMouseClick);
                 grid.add(tile, row, column);
             }
         }
@@ -74,11 +82,47 @@ public class TwoBallsPuzzleController {
         return imageView;
     }
 
-    private void createState() {
-        state = new PuzzleState();
+
+    private void onMouseClick(MouseEvent mouseEvent) {
+        var source = (Node) mouseEvent.getSource();
+        var row = GridPane.getRowIndex(source);
+        var col = GridPane.getColumnIndex(source);
+
+        Position playerPosition = state.getPosition(PuzzleState.RED_BALL);
+        Direction directionToMove = Direction.of(row - playerPosition.row(), col - playerPosition.col());
+        if (Direction.isValidDirection(directionToMove)) {
+            movePieces(directionToMove);
+        }
     }
 
-    private void bindMoveCount() {
-        moveCountTextField.textProperty().bind(moveCount.asString());
+    private void movePieces(Direction direction) {
+        state.makeMove(direction);
+        moveCount.set(moveCount.get() + 1);
     }
+
+    private void createNewState() {
+        state = new PuzzleState();
+        state.solvedProperty().addListener(this::checkIfSolved);
+    }
+
+    private void checkIfSolved(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
+        if(newValue) {
+            Platform.runLater(this::solvedDialog);
+        }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void solvedDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setTitle("Game Over");
+        dialog.setContentText("You have solved the puzzle!");
+
+        ButtonType buttonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(buttonType);
+
+        dialog.setOnCloseRequest(dialogEvent -> System.exit(0));
+
+        dialog.showAndWait();
+    }
+
 }
