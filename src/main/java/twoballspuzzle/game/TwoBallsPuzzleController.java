@@ -95,7 +95,6 @@ public class TwoBallsPuzzleController {
         var source = (Node) mouseEvent.getSource();
         var row = GridPane.getRowIndex(source);
         var col = GridPane.getColumnIndex(source);
-        System.out.println(String.format("clicked on: (%s,%s)", row, col));
 
         Position playerPosition = state.getPosition(PuzzleState.RED_BALL);
         Optional<Direction> directionToMove;

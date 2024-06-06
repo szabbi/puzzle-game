@@ -1,8 +1,6 @@
 package twoballspuzzle.model;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -84,7 +82,7 @@ public class PuzzleState implements State<Direction>{
 
         if (isRedNotOnSamePositionAsObstacle(0, 2, 3, 5, 7)
                 && !isNotEmptyButAllowedToMove(tileAboveBlue, 2, 3, 5)
-                && isEmpty(tileAboveRed)) {
+                && isEmpty(tileAboveRed) && getPosition(RED_BALL).row() > 0 && getPosition(BLUE_BALL).row() < 6) {
             return true;
         }
         return isNotEmptyButAllowedToMove(tileAboveRed, 3, 5);
@@ -95,7 +93,7 @@ public class PuzzleState implements State<Direction>{
 
         if (isRedNotOnSamePositionAsObstacle(0, 1, 2, 4, 7)
                 && isBlueNotOnSamePositionAsObstacle(2, 3, 5)
-                && isEmpty(tileBelowRed)) {
+                && isEmpty(tileBelowRed) && getPosition(RED_BALL).row() < 6 && getPosition(BLUE_BALL).row() > 0) {
             return true;
         }
         return isNotEmptyButAllowedToMove(tileBelowRed, 1, 4, 6);
@@ -105,7 +103,8 @@ public class PuzzleState implements State<Direction>{
         var tileLeftToRed = getPosition(RED_BALL).move(Direction.LEFT);
         var tileRightToBlue = getPosition(BLUE_BALL).move(Direction.RIGHT);
 
-        if (isRedNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isEmpty(tileRightToBlue) && isEmpty(tileLeftToRed)) {
+        if (isRedNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isEmpty(tileRightToBlue) && isEmpty(tileLeftToRed)
+                && getPosition(RED_BALL).col() > 0 && getPosition(BLUE_BALL).col() < 6) {
             return true;
         }
         return isNotEmptyButAllowedToMove(tileLeftToRed, 0, 1, 2, 3, 4, 6, 7) || tileRightToBlue.equals((getPosition(OBSTACLES[3])));
@@ -114,7 +113,8 @@ public class PuzzleState implements State<Direction>{
     private boolean isMovingRightPossible() {
         var tileRightToRed = getPosition(RED_BALL).move(Direction.RIGHT);
 
-        if (isBlueNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isEmpty(tileRightToRed)) {
+        if (isBlueNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isEmpty(tileRightToRed)
+                && getPosition(RED_BALL).col() < 6 && getPosition(BLUE_BALL).col() > 0) {
             return true;
         }
         return tileRightToRed.equals(getPosition(OBSTACLES[3]));
@@ -123,7 +123,6 @@ public class PuzzleState implements State<Direction>{
     private boolean isRedNotOnSamePositionAsObstacle(int... obstacleIndex) {
         for (int index : obstacleIndex) {
             if (getPosition(RED_BALL).equals(getPosition(OBSTACLES[index]))) {
-                System.out.println(String.format("obstacle %s is in the way", index));
                 return false;
             }
         }
@@ -133,7 +132,6 @@ public class PuzzleState implements State<Direction>{
     private boolean isBlueNotOnSamePositionAsObstacle(int... obstacleIndex) {
         for (int index : obstacleIndex) {
             if (getPosition(BLUE_BALL).equals(getPosition(OBSTACLES[index]))) {
-                System.out.println(String.format("obstacle %s is in the way", index));
                 return false;
             }
         }
@@ -177,7 +175,13 @@ public class PuzzleState implements State<Direction>{
 
     @Override
     public Set<Direction> getLegalMoves() {
-        return null;
+        Set<Direction> legalMoves = new HashSet<>();
+        for (Direction dir : Direction.values()) {
+            if (isLegalMove(dir)) {
+                legalMoves.add(dir);
+            }
+        }
+        return legalMoves;
     }
 
     @Override
@@ -187,19 +191,37 @@ public class PuzzleState implements State<Direction>{
                 getPosition(OBSTACLES[6]), getPosition(OBSTACLES[7]));
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PuzzleState that = (PuzzleState) o;
-        return Arrays.equals(positions, that.positions) && Objects.equals(isPuzzleSolved, that.isPuzzleSolved);
+
+        return (o instanceof PuzzleState other)
+                && getPosition(RED_BALL).equals(other.getPosition(RED_BALL)) && getPosition(BLUE_BALL).equals(other.getPosition(BLUE_BALL))
+                && getPosition(OBSTACLES[0]).equals(other.getPosition(OBSTACLES[0])) && getPosition(OBSTACLES[1]).equals(other.getPosition(OBSTACLES[1]))
+                && getPosition(OBSTACLES[2]).equals(other.getPosition(OBSTACLES[2])) && getPosition(OBSTACLES[3]).equals(other.getPosition(OBSTACLES[3]))
+                && getPosition(OBSTACLES[4]).equals(other.getPosition(OBSTACLES[4])) && getPosition(OBSTACLES[5]).equals(other.getPosition(OBSTACLES[5]))
+                && getPosition(OBSTACLES[6]).equals(other.getPosition(OBSTACLES[6])) && getPosition(OBSTACLES[7]).equals(other.getPosition(OBSTACLES[7]));
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(isPuzzleSolved);
-        result = 31 * result + Arrays.hashCode(positions);
+        int result = Objects.hash(getPosition(RED_BALL), getPosition(BLUE_BALL), getPosition(OBSTACLES[0]),
+                getPosition(OBSTACLES[1]), getPosition(OBSTACLES[2]), getPosition(OBSTACLES[3]), getPosition(OBSTACLES[4]),
+                getPosition(OBSTACLES[5]), getPosition(OBSTACLES[6]), getPosition(OBSTACLES[7]));
         return result;
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner toString = new StringJoiner(" ", "", "");
+        int index = 0;
+        for (var position : positions){
+            if (index < 2) {
+                toString.add(position.get().toString());
+            }
+            else break;
+            index++;
+        }
+        return toString.toString();
     }
 }

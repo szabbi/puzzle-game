@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
         <maven.compiler.release>21</maven.compiler.release>
-        <exec.mainClass>twoballspuzzle.solver.Main</exec.mainClass>
+        <exec.mainClass>twoballspuzzle.solver.BreadthFirstSearch</exec.mainClass>
         <javafx.version>22.0.1</javafx.version>
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
         <jacoco.version>0.8.12</jacoco.version>
