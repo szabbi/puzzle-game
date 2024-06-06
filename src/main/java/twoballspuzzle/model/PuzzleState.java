@@ -77,63 +77,65 @@ public class PuzzleState implements State<Direction>{
     }
 
     private boolean isMovingUpPossible() {
-        var redUp = getPosition(RED_BALL).move(Direction.UP);
-        var blueDown = getPosition(BLUE_BALL).move(Direction.DOWN);
-        boolean canRedMove = (isRedNotOnSamePositionAsObstacle(OBSTACLES[0]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[2]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[3])
-                && isRedNotOnSamePositionAsObstacle(OBSTACLES[5]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[7]));
-        boolean canBlueMove = (!blueDown.equals(getPosition(OBSTACLES[3])) && !blueDown.equals(getPosition(OBSTACLES[5])) && !blueDown.equals(getPosition(OBSTACLES[2])));
+        var tileAboveRed = getPosition(RED_BALL).move(Direction.UP);
+        var tileAboveBlue = getPosition(BLUE_BALL).move(Direction.DOWN);
 
-        if (canRedMove && canBlueMove && isEmpty(redUp)) {
+        if (isRedNotOnSamePositionAsObstacle(0, 2, 3, 5, 7)
+                && !isNotEmptyButAllowedToMove(tileAboveBlue, 2, 3, 5)
+                && isEmpty(tileAboveRed)) {
             return true;
         }
-        return redUp.equals(getPosition(OBSTACLES[5])) || redUp.equals(getPosition(OBSTACLES[3]));
+        return isNotEmptyButAllowedToMove(tileAboveRed, 3, 5);
     }
 
     private boolean isMovingDownPossible() {
-        var redDown = getPosition(RED_BALL).move(Direction.DOWN);
-        boolean canRedMove = (isRedNotOnSamePositionAsObstacle(OBSTACLES[0]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[1]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[2])
-                && isRedNotOnSamePositionAsObstacle(OBSTACLES[4]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[7]));
-        boolean canBlueMove = (isBlueNotOnSamePositionAsObstacle(OBSTACLES[3]) && isBlueNotOnSamePositionAsObstacle(OBSTACLES[2]) && isBlueNotOnSamePositionAsObstacle(OBSTACLES[5]));
+        var tileBelowRed = getPosition(RED_BALL).move(Direction.DOWN);
 
-        if (canRedMove && canBlueMove && isEmpty(redDown)) {
+        if (isRedNotOnSamePositionAsObstacle(0, 1, 2, 4, 7)
+                && isBlueNotOnSamePositionAsObstacle(2, 3, 5)
+                && isEmpty(tileBelowRed)) {
             return true;
         }
-        return redDown.equals(getPosition(OBSTACLES[1])) || redDown.equals(getPosition(OBSTACLES[4])) || redDown.equals(getPosition(OBSTACLES[6]));
+        return isNotEmptyButAllowedToMove(tileBelowRed, 1, 4, 6);
     }
 
     private boolean isMovingLeftPossible() {
-        var redLeft = getPosition(RED_BALL).move(Direction.LEFT);
-        var blueRight = getPosition(BLUE_BALL).move(Direction.RIGHT);
-        boolean canRedMove = (isRedNotOnSamePositionAsObstacle(OBSTACLES[0]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[1]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[2])
-                && isRedNotOnSamePositionAsObstacle(OBSTACLES[4]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[5]) && isRedNotOnSamePositionAsObstacle(OBSTACLES[6])
-                && isRedNotOnSamePositionAsObstacle(OBSTACLES[7]));
+        var tileLeftToRed = getPosition(RED_BALL).move(Direction.LEFT);
+        var tileRightToBlue = getPosition(BLUE_BALL).move(Direction.RIGHT);
 
-        if (canRedMove && isEmpty(blueRight) && isEmpty(redLeft)) {
+        if (isRedNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isEmpty(tileRightToBlue) && isEmpty(tileLeftToRed)) {
             return true;
         }
-        return redLeft.equals(getPosition(OBSTACLES[0])) || redLeft.equals(getPosition(OBSTACLES[1])) || redLeft.equals(getPosition(OBSTACLES[2]))
-                || redLeft.equals(getPosition(OBSTACLES[3])) || redLeft.equals(getPosition(OBSTACLES[4])) || redLeft.equals(getPosition(OBSTACLES[6]))
-                || redLeft.equals(getPosition(OBSTACLES[7])) || blueRight.equals((getPosition(OBSTACLES[3])));
+        return isNotEmptyButAllowedToMove(tileLeftToRed, 0, 1, 2, 3, 4, 6, 7) || tileRightToBlue.equals((getPosition(OBSTACLES[3])));
     }
 
     private boolean isMovingRightPossible() {
-        var redRight = getPosition(RED_BALL).move(Direction.RIGHT);
-        boolean canBlueMove = (isBlueNotOnSamePositionAsObstacle(OBSTACLES[0]) && isBlueNotOnSamePositionAsObstacle(OBSTACLES[1]) && isBlueNotOnSamePositionAsObstacle(OBSTACLES[2])
-                && isBlueNotOnSamePositionAsObstacle(OBSTACLES[4]) && isBlueNotOnSamePositionAsObstacle(OBSTACLES[5]) && isBlueNotOnSamePositionAsObstacle(OBSTACLES[6])
-                && isBlueNotOnSamePositionAsObstacle(OBSTACLES[7]));
+        var tileRightToRed = getPosition(RED_BALL).move(Direction.RIGHT);
 
-        if (canBlueMove && isEmpty(redRight)) {
+        if (isBlueNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isEmpty(tileRightToRed)) {
             return true;
         }
-        return redRight.equals(getPosition(OBSTACLES[3]));
+        return tileRightToRed.equals(getPosition(OBSTACLES[3]));
     }
 
-    private boolean isRedNotOnSamePositionAsObstacle(int obstacleIndex) {
-        return !getPosition(RED_BALL).equals(getPosition(obstacleIndex));
+    private boolean isRedNotOnSamePositionAsObstacle(int... obstacleIndex) {
+        for (int index : obstacleIndex) {
+            if (getPosition(RED_BALL).equals(getPosition(OBSTACLES[index]))) {
+                System.out.println(String.format("obstacle %s is in the way", index));
+                return false;
+            }
+        }
+        return true;
     }
 
-    private boolean isBlueNotOnSamePositionAsObstacle(int obstacleIndex) {
-        return !getPosition(BLUE_BALL).equals(getPosition(obstacleIndex));
+    private boolean isBlueNotOnSamePositionAsObstacle(int... obstacleIndex) {
+        for (int index : obstacleIndex) {
+            if (getPosition(BLUE_BALL).equals(getPosition(OBSTACLES[index]))) {
+                System.out.println(String.format("obstacle %s is in the way", index));
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isEmpty(Position pos) {
@@ -143,6 +145,15 @@ public class PuzzleState implements State<Direction>{
             }
         }
         return true;
+    }
+
+    private boolean isNotEmptyButAllowedToMove(Position pos, int... obstacleIndex) {
+        for (int index : obstacleIndex) {
+            if (pos.equals(getPosition(OBSTACLES[index]))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
