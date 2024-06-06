@@ -33,7 +33,7 @@ public class TwoBallsPuzzleController {
 
     private final IntegerProperty moveCount = new SimpleIntegerProperty(0);
 
-    private ImageStorage<Integer> imageStorage = new ImageLoader(TwoBallsPuzzleController.class,
+    private static final ImageStorage<Integer> imageStorage = new ImageLoader(TwoBallsPuzzleController.class,
             "red-ball.png", "blue-ball.png", "obstacle-U_rotated.png", "obstacle-L.png", "obstacle-U_rotated.png",
             "obstacle-I_rotated.png", "obstacle-L.png", "obstacle-L_rotated.png", "obstacle-I.png", "obstacle-L_rotated.png");
 
@@ -57,6 +57,7 @@ public class TwoBallsPuzzleController {
 
     private void createGameBoard() {
         grid.getChildren().clear();
+
         for (var row = 0; row < grid.getRowCount(); row++) {
             for (var column = 0; column < grid.getColumnCount(); column++) {
                 var tile = createTilesAndAddImages(column, row);
@@ -69,6 +70,7 @@ public class TwoBallsPuzzleController {
     private StackPane createTilesAndAddImages(int row, int col) {
         var tile = new StackPane();
         tile.getStyleClass().add("tile");
+
         for (int index = 0; index < 10; index++) {
             ImageView image = loadImageForPiecesOnPosition(index, row, col);
             tile.getChildren().add(image);
@@ -80,8 +82,7 @@ public class TwoBallsPuzzleController {
         ImageView imageView = new ImageView(imageStorage.get(index).orElseThrow());
 
         BooleanProperty isPieceOnPosition = new SimpleBooleanProperty();
-        isPieceOnPosition.bind(Bindings.createBooleanBinding(() -> {
-            var positionOfPieces = state.getPosition(index);
+        isPieceOnPosition.bind(Bindings.createBooleanBinding(() -> {var positionOfPieces = state.getPosition(index);
             return positionOfPieces.row() == row && positionOfPieces.col() == col;
         }, state.positionProperty(index)));
 
@@ -95,14 +96,15 @@ public class TwoBallsPuzzleController {
         var source = (Node) mouseEvent.getSource();
         var row = GridPane.getRowIndex(source);
         var col = GridPane.getColumnIndex(source);
-
         Position playerPosition = state.getPosition(PuzzleState.RED_BALL);
         Optional<Direction> directionToMove;
+
         try {
             directionToMove = Optional.of(Direction.of(row - playerPosition.row(), col - playerPosition.col()));
         } catch (IllegalArgumentException e) {
             directionToMove = Optional.empty();
         }
+
         directionToMove.ifPresentOrElse(this::movePiecesIfLegalMove, () -> System.out.println("Invalid direction"));
     }
 
@@ -119,16 +121,15 @@ public class TwoBallsPuzzleController {
         }
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     private void solvedDialog() {
-        Dialog dialog = new Dialog();
+        Dialog<String> dialog = new Dialog<>();
+
         dialog.setTitle("Game Over");
         dialog.setContentText("You have solved the puzzle!");
+        dialog.setOnCloseRequest(dialogEvent -> System.exit(0));
 
         ButtonType buttonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(buttonType);
-
-        dialog.setOnCloseRequest(dialogEvent -> System.exit(0));
 
         dialog.showAndWait();
     }

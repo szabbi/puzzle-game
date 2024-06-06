@@ -13,12 +13,13 @@ public enum Direction {
 
     private final int rowIndex, colIndex;
 
+
     Direction(int rowIndex, int colIndex) {
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
     }
 
-    public static Direction getInverse(Direction direction) {
+    public static Direction getInverseOf(Direction direction) {
         switch (direction) {
             case UP -> {
                 return DOWN;

@@ -1,13 +1,20 @@
 package utilities;
 
+import java.util.Optional;
+
 import javafx.scene.image.Image;
 import util.javafx.ImageStorage;
 
-import java.util.Optional;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 
 public class ImageLoader implements ImageStorage<Integer> {
 
-    public Image[] images;
+    private static final Logger logger = LogManager.getLogger();
+
+
+    private final Image[] images;
 
     public ImageLoader(Class<?> className, String... imageNames) {
         images = new Image[imageNames.length];
@@ -15,9 +22,9 @@ public class ImageLoader implements ImageStorage<Integer> {
             var imagePath = String.format("%s/%s", className.getPackageName().replace(".", "/"), imageNames[i]);
             try {
                 images[i] = new Image(imagePath);
-                System.out.println("image loaded from: "+ imagePath);
+                logger.debug("Image loaded: {}", imagePath);
             } catch (Exception e) {
-                System.out.println(e);
+                logger.warn("Image failed to load: {}", imagePath);
             }
         }
     }

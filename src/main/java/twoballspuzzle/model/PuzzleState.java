@@ -39,12 +39,14 @@ public class PuzzleState implements State<Direction>{
 
     public PuzzleState(Position... positions) {
         this.positions = new ReadOnlyObjectWrapper[positions.length];
+
         for (int i = 0; i < positions.length; i++) {
             this.positions[i] = new ReadOnlyObjectWrapper<>(positions[i]);
             if (i > 1) {
                 OBSTACLES[i-2] = i;
             }
         }
+
         isPuzzleSolved = new ReadOnlyBooleanWrapper();
         isPuzzleSolved.bind(this.positions[RED_BALL].isEqualTo(this.positions[BLUE_BALL]));
     }
@@ -82,7 +84,7 @@ public class PuzzleState implements State<Direction>{
 
         if (isRedNotOnSamePositionAsObstacle(0, 2, 3, 5, 7)
                 && !isNotEmptyButAllowedToMove(tileAboveBlue, 2, 3, 5)
-                && isEmpty(tileAboveRed) && getPosition(RED_BALL).row() > 0 && getPosition(BLUE_BALL).row() < 6) {
+                && isPositionEmpty(tileAboveRed) && getPosition(RED_BALL).row() > 0 && getPosition(BLUE_BALL).row() < 6) {
             return true;
         }
         return isNotEmptyButAllowedToMove(tileAboveRed, 3, 5);
@@ -93,7 +95,7 @@ public class PuzzleState implements State<Direction>{
 
         if (isRedNotOnSamePositionAsObstacle(0, 1, 2, 4, 7)
                 && isBlueNotOnSamePositionAsObstacle(2, 3, 5)
-                && isEmpty(tileBelowRed) && getPosition(RED_BALL).row() < 6 && getPosition(BLUE_BALL).row() > 0) {
+                && isPositionEmpty(tileBelowRed) && getPosition(RED_BALL).row() < 6 && getPosition(BLUE_BALL).row() > 0) {
             return true;
         }
         return isNotEmptyButAllowedToMove(tileBelowRed, 1, 4, 6);
@@ -103,7 +105,7 @@ public class PuzzleState implements State<Direction>{
         var tileLeftToRed = getPosition(RED_BALL).move(Direction.LEFT);
         var tileRightToBlue = getPosition(BLUE_BALL).move(Direction.RIGHT);
 
-        if (isRedNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isEmpty(tileRightToBlue) && isEmpty(tileLeftToRed)
+        if (isRedNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isPositionEmpty(tileRightToBlue) && isPositionEmpty(tileLeftToRed)
                 && getPosition(RED_BALL).col() > 0 && getPosition(BLUE_BALL).col() < 6) {
             return true;
         }
@@ -113,7 +115,7 @@ public class PuzzleState implements State<Direction>{
     private boolean isMovingRightPossible() {
         var tileRightToRed = getPosition(RED_BALL).move(Direction.RIGHT);
 
-        if (isBlueNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isEmpty(tileRightToRed)
+        if (isBlueNotOnSamePositionAsObstacle(0, 1, 2, 4, 5, 6, 7) && isPositionEmpty(tileRightToRed)
                 && getPosition(RED_BALL).col() < 6 && getPosition(BLUE_BALL).col() > 0) {
             return true;
         }
@@ -138,7 +140,7 @@ public class PuzzleState implements State<Direction>{
         return true;
     }
 
-    private boolean isEmpty(Position pos) {
+    private boolean isPositionEmpty(Position pos) {
         for (var p : positions) {
             if (p.get().equals(pos)) {
                 return false;
@@ -168,7 +170,8 @@ public class PuzzleState implements State<Direction>{
 
     private void moveBalls(Direction direction) {
         Position newRedBallPosition = getPosition(RED_BALL).move(direction);
-        Position newBlueBallPosition = getPosition(BLUE_BALL).move(Direction.getInverse(direction));
+        Position newBlueBallPosition = getPosition(BLUE_BALL).move(Direction.getInverseOf(direction));
+
         positions[RED_BALL].set(newRedBallPosition);
         positions[BLUE_BALL].set(newBlueBallPosition);
     }
@@ -194,9 +197,9 @@ public class PuzzleState implements State<Direction>{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if (!(o instanceof PuzzleState other)) return false;
 
-        return (o instanceof PuzzleState other)
-                && getPosition(RED_BALL).equals(other.getPosition(RED_BALL)) && getPosition(BLUE_BALL).equals(other.getPosition(BLUE_BALL))
+        return getPosition(RED_BALL).equals(other.getPosition(RED_BALL)) && getPosition(BLUE_BALL).equals(other.getPosition(BLUE_BALL))
                 && getPosition(OBSTACLES[0]).equals(other.getPosition(OBSTACLES[0])) && getPosition(OBSTACLES[1]).equals(other.getPosition(OBSTACLES[1]))
                 && getPosition(OBSTACLES[2]).equals(other.getPosition(OBSTACLES[2])) && getPosition(OBSTACLES[3]).equals(other.getPosition(OBSTACLES[3]))
                 && getPosition(OBSTACLES[4]).equals(other.getPosition(OBSTACLES[4])) && getPosition(OBSTACLES[5]).equals(other.getPosition(OBSTACLES[5]))

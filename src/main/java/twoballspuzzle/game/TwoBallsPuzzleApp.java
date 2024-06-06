@@ -9,12 +9,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TwoBallsPuzzleApp extends Application {
+    protected static final Logger logger = LogManager.getLogger();
+
 
     @Override
     public void start(Stage stage) {
-        Parent root = null;
+        Parent root;
+
         try {
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/twoballspuzzleUI.fxml")));
         } catch (IOException e) {
@@ -25,5 +30,7 @@ public class TwoBallsPuzzleApp extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        logger.debug("UI opened.");
+
     }
 }
