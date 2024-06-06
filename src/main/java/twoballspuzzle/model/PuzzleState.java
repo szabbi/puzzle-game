@@ -1,5 +1,7 @@
 package twoballspuzzle.model;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -159,29 +161,18 @@ public class PuzzleState implements State<Direction>{
     @Override
     public void makeMove(Direction direction) {
         switch (direction) {
-            case UP -> {
-                movePiece(RED_BALL, Direction.UP);
-                movePiece(BLUE_BALL, Direction.DOWN);
-            }
-            case DOWN -> {
-                movePiece(RED_BALL, Direction.DOWN);
-                movePiece(BLUE_BALL, Direction.UP);
-            }
-            case LEFT -> {
-                movePiece(RED_BALL, Direction.LEFT);
-                movePiece(BLUE_BALL, Direction.RIGHT);
-            }
-            case RIGHT -> {
-                movePiece(RED_BALL, Direction.RIGHT);
-                movePiece(BLUE_BALL, Direction.LEFT);
-            }
+            case UP -> moveBalls(Direction.UP);
+            case DOWN -> moveBalls(Direction.DOWN);
+            case LEFT -> moveBalls(Direction.LEFT);
+            case RIGHT -> moveBalls(Direction.RIGHT);
         }
     }
 
-    private void movePiece(int index, Direction direction) {
-        Position newPosition = getPosition(index).move(direction);
-        System.out.println(String.format("piece [%s] moves to [%s] from [%s] - (%s)", index, newPosition, getPosition(index), direction));
-        positions[index].set(newPosition);
+    private void moveBalls(Direction direction) {
+        Position newRedBallPosition = getPosition(RED_BALL).move(direction);
+        Position newBlueBallPosition = getPosition(BLUE_BALL).move(Direction.getInverse(direction));
+        positions[RED_BALL].set(newRedBallPosition);
+        positions[BLUE_BALL].set(newBlueBallPosition);
     }
 
     @Override
@@ -191,6 +182,24 @@ public class PuzzleState implements State<Direction>{
 
     @Override
     public State<Direction> clone() {
-        return null;
+        return new PuzzleState(getPosition(RED_BALL), getPosition(BLUE_BALL), getPosition(OBSTACLES[0]), getPosition(OBSTACLES[1]),
+                getPosition(OBSTACLES[2]), getPosition(OBSTACLES[3]), getPosition(OBSTACLES[4]), getPosition(OBSTACLES[5]),
+                getPosition(OBSTACLES[6]), getPosition(OBSTACLES[7]));
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PuzzleState that = (PuzzleState) o;
+        return Arrays.equals(positions, that.positions) && Objects.equals(isPuzzleSolved, that.isPuzzleSolved);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(isPuzzleSolved);
+        result = 31 * result + Arrays.hashCode(positions);
+        return result;
     }
 }

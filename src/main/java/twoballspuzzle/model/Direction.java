@@ -18,6 +18,24 @@ public enum Direction {
         this.colIndex = colIndex;
     }
 
+    public static Direction getInverse(Direction direction) {
+        switch (direction) {
+            case UP -> {
+                return DOWN;
+            }
+            case DOWN -> {
+                return UP;
+            }
+            case LEFT -> {
+                return RIGHT;
+            }
+            case RIGHT -> {
+                return LEFT;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
     public static Direction of(int rowIndex, int colIndex) {
         for (var direction : values()) {
             if (direction.rowIndex == rowIndex && direction.colIndex == colIndex) {
