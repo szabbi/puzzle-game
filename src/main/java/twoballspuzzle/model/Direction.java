@@ -2,7 +2,9 @@ package twoballspuzzle.model;
 
 import lombok.Getter;
 
-
+/**
+ * Stores the 4 directions (UP, DOWN, LEFT, RIGHT) where the player can move.
+ */
 @Getter
 public enum Direction {
 
@@ -20,6 +22,11 @@ public enum Direction {
         this.colIndex = colIndex;
     }
 
+    /**
+     *
+     * @param direction a direction which should be inverted
+     * @return a {@code Direction} that is opposite of the given direction
+     */
     public static Direction getInverseOf(Direction direction) {
         switch (direction) {
             case UP -> {
@@ -38,9 +45,15 @@ public enum Direction {
         throw new IllegalArgumentException();
     }
 
+    /**
+     * @param rowIndex where the row's coordinates will change
+     * @param colIndex where the column's coordinates will change
+     * @return a {@code Direction} according to the changes
+     */
     public static Direction of(int rowIndex, int colIndex) {
         for (var direction : values()) {
-            if (direction.rowIndex == rowIndex && direction.colIndex == colIndex) {
+            if (direction.rowIndex == rowIndex
+                    && direction.colIndex == colIndex) {
                 return direction;
             }
         }

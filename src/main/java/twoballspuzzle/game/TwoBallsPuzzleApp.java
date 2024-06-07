@@ -15,24 +15,24 @@ import org.apache.logging.log4j.Logger;
 
 public class TwoBallsPuzzleApp extends Application {
 
-    private static final Logger logger = LogManager.getLogger(TwoBallsPuzzleApp.class);
-
+    private static final Logger LOGGER = LogManager.getLogger(TwoBallsPuzzleApp.class);
 
     @Override
-    public void start(Stage stage) {
+    public final void start(Stage stage) {
         Parent root = null;
 
         try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/twoballspuzzleUI.fxml")));
+            root = FXMLLoader.load(Objects.requireNonNull(
+                    getClass().getResource("/twoballspuzzleUI.fxml")));
         } catch (IOException e) {
-            logger.error("Failed to create the main application window.", e);
+            LOGGER.error("Failed to create the main application window.", e);
         }
         stage.setTitle("A puzzle with two colorful balls");
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-        logger.debug("UI opened.");
+        LOGGER.debug("UI opened.");
 
     }
 }

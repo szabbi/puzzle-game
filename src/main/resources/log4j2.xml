@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="SEPARATOR">${sys:file.separator}</Property>
+        <Property name="LOG_DIR">${sys:user.home}${SEPARATOR}Documents${SEPARATOR}TwoBallsPuzzle${SEPARATOR}logs${SEPARATOR}</Property>
+        <Property name="FILE_NAME">latest.log</Property>
+        <Property name="MAX_LOG_SIZE">128 KB</Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="rolling" fileName="${LOG_DIR}${FILE_NAME}" filePattern="${LOG_DIR}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${MAX_LOG_SIZE}" />
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="rolling" />
+        </Root>
+    </Loggers>
+
+</Configuration>

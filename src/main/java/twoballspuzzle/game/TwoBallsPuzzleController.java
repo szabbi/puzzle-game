@@ -4,11 +4,17 @@ import java.util.Optional;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -26,7 +32,7 @@ import utilities.ImageLoader;
 
 public class TwoBallsPuzzleController {
 
-    private static final Logger logger = LogManager.getLogger(TwoBallsPuzzleController.class);
+    private static final Logger LOGGER = LogManager.getLogger(TwoBallsPuzzleController.class);
 
     @FXML
     private GridPane grid;
@@ -70,7 +76,7 @@ public class TwoBallsPuzzleController {
                 grid.add(tile, row, column);
             }
         }
-        logger.debug("Board created.");
+        LOGGER.debug("Board created.");
     }
 
     private StackPane createTilesAndAddImages(int row, int col) {
@@ -89,7 +95,8 @@ public class TwoBallsPuzzleController {
 
         // Sets an image's visibility based on whether there's a corresponding position defined in PuzzleState.
         BooleanProperty isPieceOnPosition = new SimpleBooleanProperty();
-        isPieceOnPosition.bind(Bindings.createBooleanBinding(() -> {var positionOfPieces = state.getPosition(index);
+        isPieceOnPosition.bind(Bindings.createBooleanBinding(() -> {
+            var positionOfPieces = state.getPosition(index);
             return positionOfPieces.row() == row && positionOfPieces.col() == col;
         }, state.positionProperty(index)));
 
@@ -111,25 +118,26 @@ public class TwoBallsPuzzleController {
             directionToMove = Optional.of(Direction.of(row - playerPosition.row(), col - playerPosition.col()));
         } catch (IllegalArgumentException e) {
             directionToMove = Optional.empty();
-            logger.error("Invalid direction", e);
+            LOGGER.error("Invalid direction", e);
         }
 
-        directionToMove.ifPresentOrElse(this::movePiecesIfLegalMove, () -> logger.warn("Clicked on invalid position: ({},{})", row, col));
+        directionToMove.ifPresentOrElse(this::movePiecesIfLegalMove,
+                () -> LOGGER.warn("Clicked on invalid position: ({},{})", row, col));
     }
 
     private void movePiecesIfLegalMove(Direction direction) {
         if (state.isLegalMove(direction)) {
             state.makeMove(direction);
-            logger.debug("Moved {}", direction);
+            LOGGER.debug("Moved {}", direction);
             moveCount.set(moveCount.get() + 1);
         } else {
-            logger.warn("Illegal move: {}", direction);
+            LOGGER.warn("Illegal move: {}", direction);
         }
     }
 
     // The observableValue is the value being observed, if it's newValue becomes true (meaning the puzzle is solved), a dialog is shown to the user.
     private void checkIfSolved(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
-        if(newValue) {
+        if (newValue) {
             Platform.runLater(this::solvedDialog);
         }
     }

@@ -8,11 +8,11 @@ import twoballspuzzle.model.PuzzleState;
 
 public class BreadthFirstSearch {
 
-    private static final Logger logger = LogManager.getLogger(BreadthFirstSearch.class);
+    private static final Logger LOGGER = LogManager.getLogger(BreadthFirstSearch.class);
 
 
     public static void main(String[] args) {
-        logger.info("Solver started.");
+        LOGGER.info("Solver started.");
         var bfs = new puzzle.solver.BreadthFirstSearch<Direction>();
         bfs.solveAndPrintSolution(new PuzzleState());
     }
