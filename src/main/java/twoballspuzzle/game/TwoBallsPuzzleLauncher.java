@@ -10,7 +10,7 @@ public class TwoBallsPuzzleLauncher {
     protected static final Logger logger = LogManager.getLogger();
 
     public static void main(String[] args) {
-        logger.info("Application started.");
+        logger.debug("Application started.");
         Application.launch(TwoBallsPuzzleApp.class, args);
     }
 }

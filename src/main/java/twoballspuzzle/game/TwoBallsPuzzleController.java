@@ -15,6 +15,9 @@ import javafx.scene.layout.StackPane;
 import util.javafx.ImageStorage;
 import javafx.scene.image.ImageView;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import twoballspuzzle.model.Direction;
 import twoballspuzzle.model.Position;
 import twoballspuzzle.model.PuzzleState;
@@ -22,6 +25,8 @@ import utilities.ImageLoader;
 
 
 public class TwoBallsPuzzleController {
+
+    protected static final Logger logger = LogManager.getLogger();
 
     @FXML
     private GridPane grid;
@@ -65,6 +70,7 @@ public class TwoBallsPuzzleController {
                 grid.add(tile, row, column);
             }
         }
+        logger.debug("Board created.");
     }
 
     private StackPane createTilesAndAddImages(int row, int col) {
@@ -105,13 +111,16 @@ public class TwoBallsPuzzleController {
             directionToMove = Optional.empty();
         }
 
-        directionToMove.ifPresentOrElse(this::movePiecesIfLegalMove, () -> System.out.println("Invalid direction"));
+        directionToMove.ifPresentOrElse(this::movePiecesIfLegalMove, () -> logger.warn("Clicked on invalid position: ({},{})", row, col));
     }
 
     private void movePiecesIfLegalMove(Direction direction) {
         if (state.isLegalMove(direction)) {
             state.makeMove(direction);
+            logger.debug("Moved {}", direction);
             moveCount.set(moveCount.get() + 1);
+        } else {
+            logger.warn("Illegal move: {}", direction);
         }
     }
 
