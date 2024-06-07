@@ -7,7 +7,9 @@ import twoballspuzzle.model.PuzzleState;
 
 
 public class BreadthFirstSearch {
-    protected static final Logger logger = LogManager.getLogger();
+
+    private static final Logger logger = LogManager.getLogger(BreadthFirstSearch.class);
+
 
     public static void main(String[] args) {
         logger.info("Solver started.");

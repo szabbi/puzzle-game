@@ -11,6 +11,7 @@ public enum Direction {
     LEFT(0, -1),
     RIGHT(0, 1);
 
+
     private final int rowIndex, colIndex;
 
 

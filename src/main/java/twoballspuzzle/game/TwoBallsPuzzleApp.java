@@ -12,18 +12,20 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 public class TwoBallsPuzzleApp extends Application {
-    protected static final Logger logger = LogManager.getLogger();
+
+    private static final Logger logger = LogManager.getLogger(TwoBallsPuzzleApp.class);
 
 
     @Override
     public void start(Stage stage) {
-        Parent root;
+        Parent root = null;
 
         try {
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/twoballspuzzleUI.fxml")));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.error("Failed to create the main application window.", e);
         }
         stage.setTitle("A puzzle with two colorful balls");
         Scene scene = new Scene(root);

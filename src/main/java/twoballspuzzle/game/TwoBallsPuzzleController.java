@@ -26,7 +26,7 @@ import utilities.ImageLoader;
 
 public class TwoBallsPuzzleController {
 
-    protected static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(TwoBallsPuzzleController.class);
 
     @FXML
     private GridPane grid;
@@ -111,6 +111,7 @@ public class TwoBallsPuzzleController {
             directionToMove = Optional.of(Direction.of(row - playerPosition.row(), col - playerPosition.col()));
         } catch (IllegalArgumentException e) {
             directionToMove = Optional.empty();
+            logger.error("Invalid direction", e);
         }
 
         directionToMove.ifPresentOrElse(this::movePiecesIfLegalMove, () -> logger.warn("Clicked on invalid position: ({},{})", row, col));

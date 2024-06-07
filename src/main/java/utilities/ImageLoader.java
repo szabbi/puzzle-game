@@ -3,6 +3,7 @@ package utilities;
 import java.util.Optional;
 
 import javafx.scene.image.Image;
+import twoballspuzzle.game.TwoBallsPuzzleApp;
 import util.javafx.ImageStorage;
 
 import org.apache.logging.log4j.Logger;
@@ -11,10 +12,10 @@ import org.apache.logging.log4j.LogManager;
 
 public class ImageLoader implements ImageStorage<Integer> {
 
-    private static final Logger logger = LogManager.getLogger();
-
+    private static final Logger logger = LogManager.getLogger(ImageLoader.class);
 
     private final Image[] images;
+
 
     public ImageLoader(Class<?> className, String... imageNames) {
         images = new Image[imageNames.length];
@@ -24,7 +25,7 @@ public class ImageLoader implements ImageStorage<Integer> {
                 images[i] = new Image(imagePath);
                 logger.debug("Image loaded: {}", imagePath);
             } catch (Exception e) {
-                logger.warn("Image failed to load: {}", imagePath);
+                logger.error("Image failed to load: {}", imagePath);
             }
         }
     }
