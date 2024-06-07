@@ -87,6 +87,7 @@ public class TwoBallsPuzzleController {
     private ImageView loadImageForPiecesOnPosition(int index, int row, int col) {
         ImageView imageView = new ImageView(imageStorage.get(index).orElseThrow());
 
+        // Sets an image's visibility based on whether there's a corresponding position defined in PuzzleState.
         BooleanProperty isPieceOnPosition = new SimpleBooleanProperty();
         isPieceOnPosition.bind(Bindings.createBooleanBinding(() -> {var positionOfPieces = state.getPosition(index);
             return positionOfPieces.row() == row && positionOfPieces.col() == col;
@@ -105,6 +106,7 @@ public class TwoBallsPuzzleController {
         Position playerPosition = state.getPosition(PuzzleState.RED_BALL);
         Optional<Direction> directionToMove;
 
+        // Checks if the click was on a valid position and if so, sets directionToMove to result moving in the click's direction.
         try {
             directionToMove = Optional.of(Direction.of(row - playerPosition.row(), col - playerPosition.col()));
         } catch (IllegalArgumentException e) {
@@ -124,6 +126,7 @@ public class TwoBallsPuzzleController {
         }
     }
 
+    // The observableValue is the value being observed, if it's newValue becomes true (meaning the puzzle is solved), a dialog is shown to the user.
     private void checkIfSolved(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
         if(newValue) {
             Platform.runLater(this::solvedDialog);

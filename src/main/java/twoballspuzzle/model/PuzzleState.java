@@ -47,6 +47,7 @@ public class PuzzleState implements State<Direction>{
             }
         }
 
+        // Binds isPuzzleSolved to be only true when the two balls positions are equal.
         isPuzzleSolved = new ReadOnlyBooleanWrapper();
         isPuzzleSolved.bind(this.positions[RED_BALL].isEqualTo(this.positions[BLUE_BALL]));
     }
